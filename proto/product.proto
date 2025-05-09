@@ -1,0 +1,6 @@
+syntax="proto3";
+
+package go.coffee.proto.product;
+
+option go_package = "github.com/th1enq/go_coffee/proto/gen";
+
