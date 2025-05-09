@@ -14,12 +14,12 @@ type DB struct {
 }
 
 func LoadDB(cfg *config.Config) (*DB, error) {
-	dsn := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=disable",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		cfg.DB.Host,
-		cfg.DB.Port,
-		cfg.DB.Name,
 		cfg.DB.User,
-		cfg.DB.Password)
+		cfg.DB.Password,
+		cfg.DB.Name,
+		cfg.DB.Port)
 
 	gormDB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),

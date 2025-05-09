@@ -20,8 +20,8 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/v1/", gw)
-
+	mux.Handle("/api/v1/", gw) 
+	
 	fmt.Printf("Starting HTTP Server on: %s\n", cfg.Server.GatewayPort)
 	if err := http.ListenAndServe(":"+cfg.Server.GatewayPort, mux); err != nil {
 		log.Fatalf("failed to serve HTTP Server: %v", err)

@@ -2,7 +2,7 @@ services:
   user:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile-user
+      dockerfile: ./docker/Dockerfile-user.dev
     env_file: .env
     container_name: user
     restart: always

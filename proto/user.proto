@@ -42,6 +42,18 @@ service UserService {
             tags: "User"
         };
     }
+
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/create"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Create a new user by admin"
+            description: "This endpoint allows an admin to create a new user."
+            tags: "User"
+        };
+    }
 }
 
 message UserInfo {
@@ -78,4 +90,15 @@ message GetUserInfoRequest {
 
 message GetUserInfoResponse {
     UserInfo user = 1;
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string password = 2;
+    string email = 3;
+}
+
+message CreateUserResponse {
+    string user_id = 1;
+    string token = 2;
 }

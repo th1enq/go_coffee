@@ -1,0 +1,34 @@
+FROM golang:1.24.3-alpine3.21 as modules
+
+COPY go.mod go.sum /modules/
+WORKDIR /modules
+RUN go mod download
+
+FROM golang:1.24.3-alpine3.21 as builder
+
+RUN apk add --no-cache bash
+
+COPY --from=modules /go/pkg /go/pkg
+COPY . /app
+WORKDIR /app
+
+# Build the migration tool
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -tags migrate -o /bin/migrate ./cmd/migrate/
+
+# Build the user service 
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -o /bin/user ./cmd/user/
+
+FROM alpine:3.21
+
+RUN apk add --no-cache bash curl
+
+EXPOSE 5002
+
+# Copy migration files and binaries
+COPY --from=builder /app/migrations /migrations
+COPY --from=builder /bin/migrate /bin/migrate
+COPY --from=builder /bin/user /app
+
+CMD ["/app"]
