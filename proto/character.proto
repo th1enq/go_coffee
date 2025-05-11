@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package character;
+
+
+option go_package = "github.com/th1enq/go_coffee/proto";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+service CharacterService {
+    rpc CreateCharacter(CreateCharacterRequest) returns (CreateCharacterResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/character/create"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Create a new character"
+            description: "This endpoint allows a user to create a new character."
+            tags: "Character"
+        };
+    }
+
+    rpc UpdateCharacter(UpdateCharacterRequest) returns (UpdateCharacterResponse) {
+        option (google.api.http) = {
+            put: "/api/v1/character/{id}"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Update a character"
+            description: "Updates details of an existing character."
+            tags: "Character"
+        };
+    }
+
+    rpc DeleteCharacter(DeleteCharacterRequest) returns (DeleteCharacterResponse) {
+        option (google.api.http) = {
+            delete: "/api/v1/character/{id}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete a character by ID"
+            description: "Deletes a character based on the provided ID."
+            tags: "Character"
+        };
+    }
+
+    rpc GetCharacterByName(GetCharacterByNameRequest) returns (GetCharacterResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/character/name/{name}"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get a character by name"
+            description: "Retrieves a character's details using its name."
+            tags: "Character"
+        };
+    }
+
+    rpc SearchCharacters(SearchCharactersRequest) returns (GetCharactersResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/character/search"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Search characters"
+            description: "Search characters using multiple filters like name, region, rarity, vision, or weapon type."
+            tags: "Character"
+        };
+    }
+}
+
+// ===== Message Definitions =====
+
+message CharacterMessage {
+    uint64 id = 1;
+    string name = 2;
+    int32 rarity = 3;
+    string region = 4;
+    string vision = 5;
+    string weapon_type = 6;
+    string constellation = 7;
+    string birthday = 8;
+    string affilliation = 9;
+    string release_date = 10;
+}
+
+// Create
+message CreateCharacterRequest {
+    CharacterMessage character = 1;
+}
+message CreateCharacterResponse {
+    CharacterMessage character = 1;
+}
+
+// Update
+message UpdateCharacterRequest {
+    uint64 id = 1;
+    CharacterMessage character = 2;
+}
+message UpdateCharacterResponse {
+    CharacterMessage character = 1;
+}
+
+// Delete
+message DeleteCharacterRequest {
+    uint64 id = 1;
+}
+message DeleteCharacterResponse {}
+
+// Get by Name
+message GetCharacterByNameRequest {
+    string name = 1;
+}
+message GetCharacterResponse {
+    CharacterMessage character = 1;
+}
+
+// Search
+message SearchCharactersRequest {
+    string name = 1;
+    string region = 2;
+    int32 rarity = 3;
+    string vision = 4;
+    string weapon_type = 5;
+}
+message GetCharactersResponse {
+    repeated CharacterMessage characters = 1;
+}

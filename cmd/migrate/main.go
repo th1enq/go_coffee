@@ -19,6 +19,7 @@ const (
 var (
 	flags = flag.NewFlagSet("migrate", flag.ExitOnError)
 	dir   = flags.String("dir", "migrations", "directory with migration files")
+	db    = flags.String("db", "all", "database to migrate (all, user, character)")
 )
 
 func main() {
@@ -34,26 +35,55 @@ func main() {
 	command := args[0]
 
 	cfg, err := config.LoadConfig()
-
 	if err != nil {
 		log.Fatalf("failed to load config in migrate: %v", err)
 	}
 
-	dsn := fmt.Sprintf(dbString, cfg.DB.Host, cfg.DB.User, cfg.DB.Password, cfg.DB.Name, cfg.DB.Port)
-
-	db, err := goose.OpenDBWithDriver(dialect, dsn)
-	if err != nil {
-		log.Fatalf(err.Error())
+	// Determine which databases to migrate
+	var databases []struct {
+		name string
+		dsn  string
 	}
 
-	defer func() {
-		if err := db.Close(); err != nil {
-			log.Fatalf(err.Error())
-		}
-	}()
+	if *db == "all" || *db == "user" {
+		databases = append(databases, struct {
+			name string
+			dsn  string
+		}{
+			name: "user",
+			dsn:  fmt.Sprintf(dbString, cfg.DB.Host, cfg.DB.User, cfg.DB.Password, cfg.DB.UserDB, cfg.DB.Port),
+		})
+	}
 
-	if err := goose.Run(command, db, *dir, args[1:]...); err != nil {
-		log.Fatalf("migrate %v: %v", command, err)
+	if *db == "all" || *db == "character" {
+		databases = append(databases, struct {
+			name string
+			dsn  string
+		}{
+			name: "character",
+			dsn:  fmt.Sprintf(dbString, cfg.DB.Host, cfg.DB.User, cfg.DB.Password, cfg.DB.CharDB, cfg.DB.Port),
+		})
+	}
+
+	for _, database := range databases {
+		log.Printf("Migrating %s database...", database.name)
+
+		db, err := goose.OpenDBWithDriver(dialect, database.dsn)
+		if err != nil {
+			log.Fatalf("Failed to open database connection for %s: %v", database.name, err)
+		}
+
+		defer func() {
+			if err := db.Close(); err != nil {
+				log.Fatalf("Error closing database connection for %s: %v", database.name, err)
+			}
+		}()
+
+		if err := goose.Run(command, db, *dir, args[1:]...); err != nil {
+			log.Fatalf("migrate %v on %s database: %v", command, database.name, err)
+		}
+
+		log.Printf("Successfully ran migration command %s on %s database", command, database.name)
 	}
 }
 
@@ -64,9 +94,12 @@ func usage() {
 }
 
 var (
-	usagePrefix = `Usage: migrate COMMAND
+	usagePrefix = `Usage: migrate [OPTIONS] COMMAND
 Examples:
     migrate status
+    migrate -db=user up
+    migrate -db=character up
+Options:
 `
 
 	usageCommands = `

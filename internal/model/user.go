@@ -6,7 +6,6 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	gen "github.com/th1enq/go_coffee/proto"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -54,11 +53,4 @@ func (u *User) HashPassword() error {
 func (u *User) CheckPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil
-}
-
-func (u *User) ProtoUser() *gen.UserInfo {
-	return &gen.UserInfo{
-		Username: u.Username,
-		Email:    u.Email,
-	}
 }

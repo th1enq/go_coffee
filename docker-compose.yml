@@ -9,20 +9,55 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    networks:
+      - coffee-network
+  character:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-character.dev
+    env_file: .env
+    container_name: character
+    restart: always
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - coffee-network
   postgres:
-      image: postgres:latest
-      container_name: postgres
-      restart: always
-      environment:
-      - POSTGRES_DB=coffee
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=userdb
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      ports:
-        - "5432:5432"
-      networks:
-        - coffee-network
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d userdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - coffee-network
+  gateway:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-gateway.dev
+    env_file: .env
+    container_name: gateway
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user
+      - character
+    networks:
+      - coffee-network
 networks:
   coffee-network:

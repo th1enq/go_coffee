@@ -9,7 +9,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/th1enq/go_coffee/config"
-	gen "github.com/th1enq/go_coffee/proto"
+	"github.com/th1enq/go_coffee/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
@@ -40,10 +40,16 @@ func NewGateWay(cfg *config.Config) (http.Handler, error) {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
-	userServiceURL := fmt.Sprintf("%s:%s", "localhost", cfg.Server.UserPort)
+	userServiceURL := fmt.Sprintf("%s:%s", "user", cfg.Server.UserPort)
 
-	if err := gen.RegisterUserServiceHandlerFromEndpoint(ctx, gwmux, userServiceURL, opts); err != nil {
+	if err := proto.RegisterUserServiceHandlerFromEndpoint(ctx, gwmux, userServiceURL, opts); err != nil {
 		log.Fatalf("failed to register gateway for user service: %v", err)
+	}
+
+	characterServiceURL := fmt.Sprintf("%s:%s", "character", cfg.Server.CharacterPort)
+
+	if err := proto.RegisterCharacterServiceHandlerFromEndpoint(ctx, gwmux, characterServiceURL, opts); err != nil {
+		log.Fatalf("failed to register gateway for character service: %v", err)
 	}
 
 	return gwmux, nil

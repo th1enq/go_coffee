@@ -1,0 +1,339 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/character.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "CharacterService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/character/create": {
+      "post": {
+        "summary": "Create a new character",
+        "description": "This endpoint allows a user to create a new character.",
+        "operationId": "CharacterService_CreateCharacter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/characterCreateCharacterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/characterCreateCharacterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Character"
+        ]
+      }
+    },
+    "/api/v1/character/name/{name}": {
+      "get": {
+        "summary": "Get a character by name",
+        "description": "Retrieves a character's details using its name.",
+        "operationId": "CharacterService_GetCharacterByName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/characterGetCharacterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Character"
+        ]
+      }
+    },
+    "/api/v1/character/search": {
+      "get": {
+        "summary": "Search characters",
+        "description": "Search characters using multiple filters like name, region, rarity, vision, or weapon type.",
+        "operationId": "CharacterService_SearchCharacters",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/characterGetCharactersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "rarity",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "vision",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "weaponType",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Character"
+        ]
+      }
+    },
+    "/api/v1/character/{id}": {
+      "delete": {
+        "summary": "Delete a character by ID",
+        "description": "Deletes a character based on the provided ID.",
+        "operationId": "CharacterService_DeleteCharacter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/characterDeleteCharacterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Character"
+        ]
+      },
+      "put": {
+        "summary": "Update a character",
+        "description": "Updates details of an existing character.",
+        "operationId": "CharacterService_UpdateCharacter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/characterUpdateCharacterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CharacterServiceUpdateCharacterBody"
+            }
+          }
+        ],
+        "tags": [
+          "Character"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "CharacterServiceUpdateCharacterBody": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/characterCharacterMessage"
+        }
+      },
+      "title": "Update"
+    },
+    "characterCharacterMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rarity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "region": {
+          "type": "string"
+        },
+        "vision": {
+          "type": "string"
+        },
+        "weaponType": {
+          "type": "string"
+        },
+        "constellation": {
+          "type": "string"
+        },
+        "birthday": {
+          "type": "string"
+        },
+        "affilliation": {
+          "type": "string"
+        },
+        "releaseDate": {
+          "type": "string"
+        }
+      }
+    },
+    "characterCreateCharacterRequest": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/characterCharacterMessage"
+        }
+      },
+      "title": "Create"
+    },
+    "characterCreateCharacterResponse": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/characterCharacterMessage"
+        }
+      }
+    },
+    "characterDeleteCharacterResponse": {
+      "type": "object"
+    },
+    "characterGetCharacterResponse": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/characterCharacterMessage"
+        }
+      }
+    },
+    "characterGetCharactersResponse": {
+      "type": "object",
+      "properties": {
+        "characters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/characterCharacterMessage"
+          }
+        }
+      }
+    },
+    "characterUpdateCharacterResponse": {
+      "type": "object",
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/characterCharacterMessage"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

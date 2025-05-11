@@ -2,7 +2,7 @@ syntax="proto3";
 
 package user;
 
-option go_package = "github.com/th1enq/go_coffee/proto/gen";
+option go_package = "github.com/th1enq/go_coffee/proto";
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";

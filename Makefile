@@ -6,4 +6,4 @@ proto:
 	--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=. --grpc-gateway_opt paths=source_relative \
 	--openapiv2_out=./docs --openapiv2_opt logtostderr=true \
-	proto/user.proto
+	proto/*.proto

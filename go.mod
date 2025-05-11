@@ -1,6 +1,8 @@
 module github.com/th1enq/go_coffee
 
-go 1.24.3
+go 1.23.0
+
+toolchain go1.24.3
 
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
@@ -10,7 +12,6 @@ require (
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/joho/godotenv v1.5.1
 	github.com/pressly/goose/v3 v3.24.3
-	github.com/th1enq/go-map v0.0.0-20250426164851-547faf58a1e3
 	golang.org/x/crypto v0.38.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250505200425-f936aa4a68b2
 	google.golang.org/grpc v1.72.0

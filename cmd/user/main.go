@@ -9,7 +9,7 @@ import (
 	"github.com/th1enq/go_coffee/db"
 	"github.com/th1enq/go_coffee/internal/auth"
 	"github.com/th1enq/go_coffee/internal/user"
-	gen "github.com/th1enq/go_coffee/proto"
+	"github.com/th1enq/go_coffee/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("User Service: failed loading config: %v", err)
 	}
 
-	db, err := db.LoadDB(cfg)
+	db, err := db.LoadDB(cfg, config.UserService)
 	if err != nil {
 		log.Fatalf("User Service: failed connect db: %v", err)
 	}
@@ -30,7 +30,7 @@ func main() {
 	server := grpc.NewServer()
 	service := user.NewUserService(db, jwtManager)
 
-	gen.RegisterUserServiceServer(server, service)
+	proto.RegisterUserServiceServer(server, service)
 
 	reflection.Register(server)
 
